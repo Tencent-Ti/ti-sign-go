@@ -65,10 +65,11 @@ func (ts *TiSign) CreateSignatureInfo() (map[string]string, string) {
 	// 1.2 设置常量URI和QueryString
 	canonicalURI := "/"
 	canonicalQueryString := ""
-	// 1.3 拼接关键header信息，包括content-type和根域名host
-	canonicalHeaders := fmt.Sprintf("content-type:%s\nhost:%s\n", ts.HeaderContent.ContentType, ts.HeaderContent.Host)
+	// 1.3 拼接关键header信息，包括content-type、根域名host、请求时间x-tc-timestamp
+	//     生成签名有效期的时间为60分钟
+	canonicalHeaders := fmt.Sprintf("content-type:%s\nhost:%s\nx-tc-timestamp:%s\n", ts.HeaderContent.ContentType, ts.HeaderContent.Host, ts.HeaderContent.XTCTimestamp)
 	// 1.4 设置常量签名头字符串
-	signedHeaders := "content-type;host"
+	signedHeaders := "content-type;host;x-tc-timestamp;"
 	// 1.5 对常量payload进行hash计算
 	requestPayload := ""
 	hashedRequestPayload := ts.sha256hex(requestPayload)
